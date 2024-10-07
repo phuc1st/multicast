@@ -65,7 +65,7 @@ public class Server extends Thread {
 					InetAddress address = packet.getAddress();
 					int clientPort = packet.getPort();
 					String msg = address.toString() +" "+ clientPort + " ";
-					msg += incoming.substring(incoming.indexOf("}"));
+					msg += incoming.substring(incoming.indexOf("}")+1);
 					if(target.equalsIgnoreCase("group")) {					           
 			             outPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, GroupAddress, MULTICASTPORT);
 			             socketGroup.send(outPacket);

@@ -9,28 +9,34 @@ public class SimpleGUI extends Thread {
 	private   JTextField textField;
 	private JTextArea textArea;
 	private boolean inGroup = false;
+	private Thread t;
 	public final Runnable typeA;
 	public SimpleGUI(String username, String serverAddress) {
 		this.username = username;
 //		init(username);	
-		init();
+		try {
+			init();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.clObj = new clientObj(serverAddress,9876);
 		connect();
 		this.start();
 		  typeA = new Runnable() {
 	            public void run() {
 	               while(true) {
-	            	 if(inGroup) {
+	            	
 	            	   String data2 = clObj.multicast();
 	  				 textArea.append(data2+"\n");
-	            	 }
+	            	 
 	               }
 	            }
 	        };
-	        new Thread(this.typeA).start();
+	        t = new Thread(this.typeA);
 	        
 	}
-	public void init() {
+	public void init() throws InterruptedException {
 		 	JFrame frame = new JFrame("Simple GUI");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setSize(400, 300);
@@ -50,11 +56,12 @@ public class SimpleGUI extends Thread {
 	        btnPanel.add(exit);
 	        
 	        join.addActionListener(e->{
-	        	this.inGroup = true;
+	        	this.t.start();
+	      
 	        });
 	        
 	        exit.addActionListener(e->{
-	        	this.inGroup = false;
+	        	this.t.stop();
 	        });
 	        
 	        button.addActionListener(e->{
