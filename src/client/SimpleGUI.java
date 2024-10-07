@@ -8,6 +8,7 @@ public class SimpleGUI extends Thread {
 	private String username;
 	private   JTextField textField;
 	private JTextArea textArea;
+	private boolean inGroup = false;
 	public final Runnable typeA;
 	public SimpleGUI(String username, String serverAddress) {
 		this.username = username;
@@ -19,8 +20,10 @@ public class SimpleGUI extends Thread {
 		  typeA = new Runnable() {
 	            public void run() {
 	               while(true) {
-	            	 String data2 = clObj.multicast();
+	            	 if(inGroup) {
+	            	   String data2 = clObj.multicast();
 	  				 textArea.append(data2+"\n");
+	            	 }
 	               }
 	            }
 	        };
@@ -39,6 +42,21 @@ public class SimpleGUI extends Thread {
 	        // Tạo JTextField và JButton
 	        textField = new JTextField(20);
 	        JButton button = new JButton("Send");
+	        JButton join = new JButton("Join");
+	        JButton exit = new JButton("Exit");
+	        JPanel btnPanel = new JPanel(new GridLayout(1, 3));
+	        btnPanel.add(button);
+	        btnPanel.add(join);
+	        btnPanel.add(exit);
+	        
+	        join.addActionListener(e->{
+	        	this.inGroup = true;
+	        });
+	        
+	        exit.addActionListener(e->{
+	        	this.inGroup = false;
+	        });
+	        
 	        button.addActionListener(e->{
 	        	clObj.send(textField.getText());
 	        	textArea.setText("");
@@ -48,7 +66,7 @@ public class SimpleGUI extends Thread {
 	        JPanel panel = new JPanel();
 	        panel.setLayout(new BorderLayout());
 	        panel.add(textField, BorderLayout.CENTER);
-	        panel.add(button, BorderLayout.EAST);
+	        panel.add(btnPanel, BorderLayout.EAST);
 
 	        // Thêm các thành phần vào frame
 	        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
