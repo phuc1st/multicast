@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -79,6 +81,34 @@ public class clientObj {
 
 			// Create a new Multicast socket
 			socket = new MulticastSocket(Server.MULTICASTPORT);
+			 NetworkInterface netIf = NetworkInterface.getByName("bge0");
+			 MulticastSocket s = new MulticastSocket(6789);
+
+			 socket.joinGroup(new InetSocketAddress(address, 0), netIf);
+			// Joint the Multicast group
+//			socket.joinGroup(address);
+			inPacket = new DatagramPacket(BUFFER, BUFFER.length);
+			socket.receive(inPacket);
+			msg = new String(BUFFER, 0, inPacket.getLength());
+			
+			
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return msg;
+	}
+	public String all() {
+		byte[] BUFFER = new byte[4096];
+
+		MulticastSocket socket = null;
+		DatagramPacket inPacket = null;
+		String msg = "";
+		try {
+			// Get the address that we are going to connect to.
+			InetAddress address = InetAddress.getByName(Server.ALL_ADDRESS);
+
+			// Create a new Multicast socket
+			socket = new MulticastSocket(Server.ALLPORT);
 
 			// Joint the Multicast group
 			socket.joinGroup(address);

@@ -17,7 +17,9 @@ import java.util.List;
 public class Server extends Thread {
 	public static final int PORT = 9876;
 	public static final int MULTICASTPORT = 8000;
-	public static final String GROUP_ADDRESS = "224.0.0.1";
+	public static final String GROUP_ADDRESS = "226.168.20.130";
+	public static final int ALLPORT = 7000;
+	public static final String ALL_ADDRESS = "225.0.0.1";
 	private static Hashtable<String, InetAddress> userAddress = new Hashtable<>();
 	private static Hashtable<String, Integer> userPort = new Hashtable<>();
 	private static Hashtable<InetAddress, Integer> userAddressPort = new Hashtable<>();
@@ -40,6 +42,7 @@ public class Server extends Thread {
 		try (DatagramSocket socket = new DatagramSocket(PORT)) {
 			byte[] buffer = new byte[1024 * 1024];
 			InetAddress GroupAddress = InetAddress.getByName(GROUP_ADDRESS);
+			InetAddress allAddress = InetAddress.getByName(ALL_ADDRESS);
 			DatagramPacket outPacket = null;
 			while (true) {
 
@@ -71,7 +74,7 @@ public class Server extends Thread {
 			             socketGroup.send(outPacket);
 					}
 					else if(target.equalsIgnoreCase("all")) {
-						outPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("255.255.255.255"), MULTICASTPORT);
+						outPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, allAddress, ALLPORT);
 						 socketGroup.send(outPacket);
 					}else {
 						InetAddress i = InetAddress.getByName("127.0.0.1");

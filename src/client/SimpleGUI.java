@@ -34,6 +34,7 @@ public class SimpleGUI extends Thread {
 	            }
 	        };
 	        t = new Thread(this.typeA);
+	        t.start();
 	        
 	}
 	public void init() throws InterruptedException {
